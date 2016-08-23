@@ -4,8 +4,31 @@
   <title>canvas</title>
 </head>
 <body>
-  <canvas id="canvas-sample" width="200" height="100" ></canvas>
+  canvas画板<br />
+  <canvas id="myCanvas" width="500" height="350" ></canvas>
 </body>
 <!-- <script type="text/javascript" src="js/base.js" ></script> -->
-<script type="text/javascript" src="js/canvasbase.js" ></script>
+<!-- <script type="text/javascript" src="js/canvasbase.js" ></script> -->
+<script type="text/javascript" >
+  var canvas = document.getElementById("myCanvas");
+  var ctx = canvas.getContext('2d');
+  // var img = new Image();
+  // img.src = "img/face.jpg";
+  // img.onload = function(){
+  //   ctx.drawImage(img,10,10)
+  // }
+  ctx.beginPath();
+  ctx.strokeStyle = "#000000";
+  ctx.strokeRect(50,50,150,100);
+  ctx.scale(0.5,0.5);
+
+  ctx.beginPath();
+  ctx.strokeStyle = "#cccccc";
+  ctx.strokeRect(50,50,150,100);
+
+  ctx.scale(1,1);
+  ctx.beginPath();
+  ctx.fillStyle = "#ff0000";
+  ctx.fillRect(150,150,150,100);
+</script>
 </html>
