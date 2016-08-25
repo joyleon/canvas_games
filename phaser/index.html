@@ -1,0 +1,90 @@
+<html>
+<head>
+  <meta charset="utf-8"  />
+  <title>phaser</title>
+</head>
+<style type="text/css">
+#container{margin:0 auto;}
+</style>
+<body>
+  <div id="container" >
+
+  </div>
+</body>
+<script type="text/javascript" src="js/phaser.js" ></script>
+<script type="text/javascript" >
+var game = new Phaser.Game(400,500,Phaser.AUTO,'container',state);
+    function state(game){
+        this.init = function(){
+//            game.stage.setBackgroundColor('0xffffff');
+        };
+        this.preload = function(){
+//            game.load.image('cat','./assets/cat.png');
+//            game.load.spritesheet('sprite','./assets/sprite.png',150,162);
+//            game.load.spritesheet('sprite','./assets/btn.png',200,38);
+//            game.load.image('cat','./assets/tile.png');
+//            game.load.bitmapFont('font','./asset/font.png','./asset/font.fnt');
+//            game.load.atlasXML('man','./asset/atlas/sprites.png','./asset/atlas/sprites.xml');
+            game.load.image('bubble','./asset/bubble.png');
+        };
+        this.create = function(){
+            //按钮
+//            game.add.button(100,100,'sprite',function(){
+//                alert('按钮被点击')
+//            },'',2,1,4,3);
+            //精灵
+//            var cat1 = game.add.sprite(100,100,'cat');
+//            var cat2 = game.add.sprite(100,100,'cat');
+//            var cat3 = game.add.sprite(100,100,'cat');
+//
+//            cat1.anchor.set(1,1);
+//            cat2.anchor.set(0,0);
+//            cat3.anchor.set(0.5,0.5);
+//
+//            cat2.tint = "0x0000ff";
+//            cat3.tint = "0x00ff00";
+//            cat1.tint = "0xff0000";
+            //瓦片精灵
+//            var tile = game.add.tileSprite(0,0,game.width,game.height,'cat');
+//            tile.autoScroll(-20,-20);
+            //文字
+//            var text = game.add.text(0,0,'Hello,World!');
+//
+//            text.fill = "#fff";
+//            text.font = "微软雅黑";
+//            text.fontWeight = 100;
+////            text.style.backgroundColor = "#0f0";
+//            text.stroke = "#f00";
+//            text.strokeThickness = 5;
+//            text.wordWrap = true;
+//            text.wordWrapWidth = 10;
+            //bitmapText 补帧动画
+//            var text = game.add.bitmapText(0,0,'font','黄河远上,\n' +
+//                    '白云一片,\n' +
+//                    '孤城万仞山。\n' +
+//                    '羌笛何须怨,\n' +
+//                    '杨柳春风,\n' +
+//                    '不度玉门关。'
+//            );
+            //animation 逐帧动画
+//            var man = game.add.sprite(0,0,'man');
+//            man.animations.add('tiny',[0,1,2,3,4,5,6]);
+//            man.play('tiny',10,true);
+            //粒子
+            var emitter = game.add.emitter(game.width/2,game.height/2,50);
+            emitter.makeParticles('bubble');
+//            emitter.setXSpeed(500,1000);
+//            emitter.setYSpeed(500,1000);
+            emitter.setScale(0,1,0,1,1000);
+            emitter.setAlpha(0,1,1000);
+            emitter.setRotation(0,0);
+            emitter.bounce.y = 0.8;
+            emitter.start(false,3000,100,50);
+        };
+        this.update = function(){
+
+        }
+    }
+
+</script>
+</html>
