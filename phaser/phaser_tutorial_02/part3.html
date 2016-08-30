@@ -2,6 +2,7 @@
 <html lang="en"> 
 <head> 
 	<meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;" />
 	<title>Phaser - Making your first game, part 3</title>
 	<script type="text/javascript" src="js/phaser.min.js"></script>
     <style type="text/css">
@@ -14,7 +15,7 @@
 
 <script type="text/javascript">
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
+var game = new Phaser.Game(420, 600, Phaser.AUTO, 'game');
 
 var Mario = function(game){
     this.platforms = null;
@@ -23,6 +24,8 @@ var Mario = function(game){
     this.stars = null;
     this.score = 0;
     this.scoreText = null;
+    this.baddie = null;
+    this.tank = null;
 };
 
 Mario.prototype.preload = function(){
@@ -30,9 +33,13 @@ Mario.prototype.preload = function(){
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+    this.load.spritesheet('baddie','assets/baddie.png', 32, 32);
+    this.load.spritesheet('tank','../../tankgame/asset/tank.png',53, 53);
 };
 
 Mario.prototype.create = function(){
+    //设置世界大小
+    this.world.setBounds(0,0,800,400);
     this.physics.startSystem(Phaser.Physics.ARCADE);
     //添加背景图片
     var sky = this.add.sprite(0,0,'sky');
@@ -63,9 +70,28 @@ Mario.prototype.create = function(){
     //不能出界
     this.player.body.collideWorldBounds = true;
 
+    //添加坏蛋
+    this.baddie = this.add.sprite(this.world.width-64,this.world.height-150,'baddie');
+    //添加物理引擎
+    this.physics.arcade.enable(this.baddie);
+    //添加重力
+    this.baddie.body.gravity.y = 1500;
+    //添加碰撞系数
+    this.baddie.body.bounce.y = 0.2;
+    //不能出界
+    this.player.body.collideWorldBounds = true;
+
+    //添加坦克
+    this.tank = this.add.sprite(64,this.world.height-300,'tank');
+    this.physics.arcade.enable(this.tank);
+    this.tank.body.bounce.y = 0;
+//    this.tank.body.gravity.y = 1500;
+
     //设置动画
     this.player.animations.add('left',[0,1,2,3],10,true);
     this.player.animations.add('right',[5,6,7,8],10,true);
+    this.baddie.animations.add('baddieleft',[2,3],10,true);
+    this.baddie.animations.add('baddieleft',[0,1],10,true);
 
     //星星
     this.stars = this.add.group();
@@ -82,6 +108,9 @@ Mario.prototype.create = function(){
 
     //创建方向键监听对象
     this.cursors = this.input.keyboard.createCursorKeys();
+
+    //摄像机跟随
+    this.camera.follow(this.player);
 };
 
 
@@ -92,8 +121,15 @@ Mario.prototype.update = function(){
     this.physics.arcade.collide(this.stars, this.platforms);
     //捕捉星星
     this.physics.arcade.overlap(this.player, this.stars, this.CollectStar, null, this);
+    //坏蛋与地面碰撞
+    this.physics.arcade.collide(this.baddie, this.platforms);
+    //坦克与地面碰撞
+    this.physics.arcade.collide(this.tank, this.platforms);
 
     this.player.body.velocity.x = 0;
+
+    this.baddie.body.velocity.x = -150;
+    this.baddie.animations.play('baddieleft');
 
     if (this.cursors.left.isDown) {
         this.player.body.velocity.x = -150;
