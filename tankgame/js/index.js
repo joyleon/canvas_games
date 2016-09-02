@@ -6,6 +6,11 @@ var TankGame = function(game){
     this.layer = null;
     this.cursors = null;
     this.keycode = null;
+    this.bulletTime = 0;
+    this.bullet = null;
+    this.bullets = null;
+    this.direction = null;
+    this.bulletSpeed = null;
 };
 
 TankGame.prototype.preload = function(){
@@ -44,6 +49,21 @@ TankGame.prototype.create = function(){
     //不能出界
     this.tank.body.collideWorldBounds = true;
 
+    //子弹
+    this.bullets = this.add.group();
+    this.bullets.enableBody = true;
+    this.physics.arcade.enable(this.bullets);
+
+    for (var i = 0; i < 20; i++)
+    {
+        var b = this.bullets.create(0, 0, 'bullet');
+        b.name = 'bullet' + i;
+        b.exists = false;
+        b.visible = false;
+        b.checkWorldBounds = true;
+        b.events.onOutOfBounds.add(this.resetBullet, this);
+    }
+
     //坦克动画
     this.tank.animations.add('left',[4,5],10,true);
     this.tank.animations.add('right',[6,7],10,true);
@@ -52,8 +72,8 @@ TankGame.prototype.create = function(){
 
     //创建键盘方向键监听
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.keycode = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    console.log(this.keycode);
+    // this.keycode = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    this.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
     //摄像机跟随
     this.camera.follow(this.tank);
 };
@@ -68,30 +88,60 @@ TankGame.prototype.update = function(){
     this.tank.body.velocity.x = 0;
     this.tank.body.velocity.y = 0;
 
-    if(this.keycode.isDown){
-        this.leftSpeed = 300;
-    }
-
     //绑定方向按键事件
     if (this.cursors.left.isDown) {
         this.tank.body.velocity.x = -this.leftSpeed;
         this.tank.animations.play('left');
+        this.direction = 'x';
+        this.bulletSpeed = -300;
     }
     else if (this.cursors.right.isDown) {
         this.tank.body.velocity.x = this.leftSpeed;
         this.tank.animations.play('right');
+        this.direction = 'x';
+        this.bulletSpeed = 300;
     }
     else if (this.cursors.up.isDown) {
         this.tank.body.velocity.y = -this.leftSpeed;
         this.tank.animations.play('up');
+        this.direction = 'y';
+        this.bulletSpeed = -300;
     }
     else if (this.cursors.down.isDown) {
         this.tank.body.velocity.y = this.leftSpeed;
         this.tank.animations.play('down');
+        this.direction = 'y';
+        this.bulletSpeed = 300;
     }
     else{
         this.tank.animations.stop();
     }
+
+    if(this.input.keyboard.isDown([Phaser.Keyboard.SPACEBAR])){
+        this.fireBullet(this.direction,this.bulletSpeed);
+    }
 };
+
+TankGame.prototype.fireBullet = function(direction,speed){
+    if(this.time.now > this.bulletTime){
+        this.bullet = this.bullets.getFirstExists(false);
+        if (this.bullet)
+        {
+            this.bullet.reset(this.tank.x, this.tank.y);
+            direction == 'x' ? (this.bullet.body.velocity.x = speed) : (this.bullet.body.velocity.y = speed);
+            this.bulletTime = game.time.now + 150;
+        }
+    }
+};
+
+TankGame.prototype.resetBullet = function(){
+    this.bullet.kill();
+};
+// TankGame.prototype.collisionHandler = function(this.bullet, veg) {
+//
+//     bullet.kill();
+//     veg.kill();
+//
+// }
 
 game.state.add('game',TankGame,true);
